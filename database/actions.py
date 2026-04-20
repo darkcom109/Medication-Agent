@@ -1,6 +1,7 @@
 import sqlite3
 
 def setup_db():
+    """Creates the database if it does not exist yet."""
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
 
@@ -16,6 +17,7 @@ def setup_db():
     conn.close()
 
 def create_medication(name, dosage):
+    """Inserts medication into the database"""
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
 
@@ -28,6 +30,7 @@ def create_medication(name, dosage):
     conn.close()
 
 def delete_medication(name, dosage):
+    """Deletes medication from the database"""
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
 
@@ -40,6 +43,7 @@ def delete_medication(name, dosage):
     conn.close()
 
 def get_medication_by_name(name):
+    """Reads medication by name from the database"""
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
 
@@ -48,10 +52,14 @@ def get_medication_by_name(name):
         WHERE name = ?
     """, (name,))
 
-    conn.commit()
+    result = cursor.fetchall()
+
     conn.close()
 
+    return result
+
 def get_medication_by_dosage(dosage):
+    """Reads medication by dosage from the database"""
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
 
@@ -60,10 +68,14 @@ def get_medication_by_dosage(dosage):
         WHERE dosage = ?
     """, (dosage,))
 
-    conn.commit()
+    result = cursor.fetchall()
+
     conn.close()
 
+    return result
+
 def get_medication_by_name_and_dosage(name, dosage):
+    """Reads medication by name and dosage from the database"""
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
 
@@ -71,16 +83,18 @@ def get_medication_by_name_and_dosage(name, dosage):
         SELECT * FROM medications
         WHERE name = ? AND dosage = ?
     """, (name, dosage))
+    result = cursor.fetchall()
 
-    conn.commit()
     conn.close()
 
+    return result
+
 def get_all_medications():
+    """Reads all medications from the database"""
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM medications")
     result = cursor.fetchall()
 
-    conn.close()
     return result
