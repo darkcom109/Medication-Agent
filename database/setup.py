@@ -27,6 +27,18 @@ def create_medication(name, dosage):
     conn.commit()
     conn.close()
 
+def delete_medication(name, dosage):
+    conn = sqlite3.connect("database/medications.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM medications
+        WHERE name = ? AND dosage = ?
+    """, (name, dosage))
+
+    conn.commit()
+    conn.close()
+
 def get_all_medications():
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
