@@ -39,6 +39,42 @@ def delete_medication(name, dosage):
     conn.commit()
     conn.close()
 
+def get_medication_by_name(name):
+    conn = sqlite3.connect("database/medications.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT name FROM medications
+        WHERE name = ?
+    """, (name,))
+
+    conn.commit()
+    conn.close()
+
+def get_medication_by_dosage(dosage):
+    conn = sqlite3.connect("database/medications.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT dosage FROM medications
+        WHERE dosage = ?
+    """, (dosage,))
+
+    conn.commit()
+    conn.close()
+
+def get_medication_by_name_and_dosage(name, dosage):
+    conn = sqlite3.connect("database/medications.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT * FROM medications
+        WHERE name = ? AND dosage = ?
+    """, (name, dosage))
+
+    conn.commit()
+    conn.close()
+
 def get_all_medications():
     conn = sqlite3.connect("database/medications.db")
     cursor = conn.cursor()
