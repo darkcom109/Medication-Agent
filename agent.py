@@ -1,5 +1,11 @@
 from openai import OpenAI
 from dotenv import load_dotenv
+from database.setup import (
+    get_all_medications, 
+    create_medication,
+    setup_db
+)
+
 import os
 
 load_dotenv()
@@ -9,10 +15,20 @@ client = OpenAI(
     api_key=os.getenv("OPEN_ROUTER_API_KEY"),
 )
 
+system_content = """You are an AI medication agent where you 
+                    can make queries to a database to obtain the user's medications.
+                    You main function right now:
+                    1. If the user asks for medications, just simply output the letter 'r' as a flag, THAT IS IT
+                    2. If the user asks to create a medication, there is 2 required parameters, name and dosage,
+                    both of these are required, if there is one missing say it is missing, else just simply output
+                    this - 'c|{name}|{dosage}' """
+
 system_message = {
     "role": "system",
-    "content": "You are a very basic chatbot. Respond in short sentences."
+    "content": system_content
 }
+
+setup_db()
 
 while True:
     user_input = input("User: ")
@@ -25,4 +41,16 @@ while True:
         ],
     )
 
-    print("Medication Agent:", response.choices[0].message.content)
+    clean_response = response.choices[0].message.content.strip()
+
+    if (clean_response == "r"):
+        output = get_all_medications()
+        print(f"Medication Agent: {output}")
+    elif(clean_response.startswith("c")):
+        arr = clean_response.split("|")
+        medication_name = arr[1]
+        medication_dosage = arr[2]
+        create_medication(medication_name, medication_dosage)
+        print("Medication Agent: Medication Successfully Recorded")
+    else:
+        print(f"Medication Agent: {clean_response}")
