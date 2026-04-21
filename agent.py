@@ -1,14 +1,6 @@
 from openai import OpenAI
 from dotenv import load_dotenv
-from database.actions import (
-    get_all_medications, 
-    create_medication,
-    delete_medication,
-    get_medication_by_name_and_dosage,
-    get_medication_by_name,
-    get_medication_by_dosage,
-    setup_db
-)
+from medications.medication_service import MedicationService
 
 import os
 import json
@@ -59,8 +51,6 @@ system_message = {
     "content": system_content
 }
 
-setup_db()
-
 while True:
     user_input = input("User: ").strip()
 
@@ -79,11 +69,12 @@ while True:
 
         content = response.choices[0].message.content.strip()
         data = json.loads(content)
-
+        
+        agent = MedicationService()
         action = data.get("action")
 
         if action == "get_all_medications":
-            output = get_all_medications()
+            output = agent.get_all_medications()
             print(f"Medication Agent: {output}")
 
         elif action == "create_medication":
@@ -94,7 +85,7 @@ while True:
                 print("Medication Agent: Missing name or dosage")
                 continue
 
-            create_medication(name, dosage)
+            agent.create_medication(name, dosage)
             print("Medication Agent: Medication successfully recorded")
         
         elif action == "delete_medication":
@@ -105,7 +96,7 @@ while True:
                 print("Medication Agent: Missing name or dosage")
                 continue
 
-            deleted = delete_medication(name, dosage)
+            deleted = agent.delete_medication(name, dosage)
 
             if deleted:
                 print("Medication Agent: Medication successfully deleted")
@@ -118,7 +109,7 @@ while True:
                 print("Medication Agent: Missing medication name")
                 continue
 
-            output = get_medication_by_name(name)
+            output = agent.get_medication_by_name(name)
             print(f"Medication Agent: {output}")
 
         elif action == "get_medication_by_dosage":
@@ -127,7 +118,7 @@ while True:
                 print("Medication Agent: Missing medication dosage")
                 continue
 
-            output = get_medication_by_dosage(dosage)
+            output = agent.get_medication_by_dosage(dosage)
             print(f"Medication Agent: {output}")
         
         elif action == "get_medication_by_name_and_dosage":
@@ -138,7 +129,7 @@ while True:
                 print("Medication Agent: Missing name or dosage")
                 continue
 
-            output = get_medication_by_name_and_dosage(dosage)
+            output = agent.get_medication_by_name_and_dosage(dosage)
             print(f"Medication Agent: {output}")
         
         elif action == "ask_for_missing_info":
