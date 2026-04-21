@@ -1,6 +1,6 @@
 from openai import OpenAI
 from dotenv import load_dotenv
-from medications.medication_service import MedicationService
+from app.services.medication_service import MedicationService
 
 import os
 import json

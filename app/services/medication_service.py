@@ -2,7 +2,7 @@ import sqlite3
 
 class MedicationService:
     def __init__(self):
-        self.database_url = "medications/medications.db"
+        self.database_url = "data/medications.db"
         self.setup_db()
 
     def setup_db(self):
