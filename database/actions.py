@@ -42,6 +42,8 @@ def delete_medication(name, dosage):
     conn.commit()
     conn.close()
 
+    return True
+
 def get_medication_by_name(name):
     """Reads medication by name from the database"""
     conn = sqlite3.connect("database/medications.db")
